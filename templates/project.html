@@ -1,0 +1,27 @@
+<!-- templates/project.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Project Details: {{.Project.Name}}</h1>
+    <p><strong>Project ID:</strong> {{.Project.ID}}</p>
+    <p><strong>Building Site:</strong><a href="/building-site/{{.BuildingSiteID}}">{{.Project.BuildingSiteID}}</a></p>
+    <p><strong>Type:</strong> {{.Project.ProjectType}}</p>
+
+    <h2>Project Resources</h2>
+    <div class="resources">
+        <a href="/schedule?project_id={{.Project.ID}}">Schedules</a>
+        <a href="/project/{{.Project.ID}}/estimate">Estimate</a>
+        <a href="/construction_team?project_id={{.Project.ID}}">Construction Teams</a>
+        <a href="/machinery?project_id={{.Project.ID}}">Machines</a>
+        <a href="/project/{{.Project.ID}}/reports">Reports</a>
+        <a href="/project/{{.Project.ID}}/exceeded-deadlines">Exceeded Deadlines</a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!-- templates/work-schedules.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Schedules</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Work Schedules for Project</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Construction Team ID</th>
+                <th>Work Type</th>
+                <th>Plan Start Date</th>
+                <th>Plan End Date</th>
+                <th>Fact Start Date</th>
+                <th>Fact End Date</th>
+                <th>Plan Order</th>
+                <th>Fact Order</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .Schedules}}
+            <tr>
+                <td>{{.ID}}</td>
+                <td>{{.ConstructionTeamID}}</td>
+                <td>{{.WorkType.Name}}</td>
+                <td>{{.PlanStartDate.Format "02.01.2006"}}</td>
+                <td>{{.PlanEndDate.Format "02.01.2006"}}</td>
+                <td>{{if .FactStartDate.IsZero}}Not Started{{else}}{{.FactStartDate.Format "02.01.2006"}}{{end}}</td>
+                <td>{{if .FactEndDate.IsZero}}Not Ended{{else}}{{.FactEndDate.Format "02.01.2006"}}{{end}}</td>
+                <td>{{.PlanOrder}}</td>
+                <td>{{.FactOrder}}</td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!-- templates/construction.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Construction Projects</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Construction Projects</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Project Name</th>
+            <th>Building Site ID</th>
+            <th>Project Type</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .Projects}}
+        <tr>
+            <td><a href="/project/{{.ID}}">{{.Name}}</a></td>
+            <td><a href="/building-site/{{.BuildingSiteID}}">{{.BuildingSiteID}}</a></td>
+            <td>{{.ProjectType}}</td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

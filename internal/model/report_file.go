@@ -8,7 +8,7 @@ type ReportFile struct {
 	ID        int           `json:"id"`
 	ProjectID int           `json:"project_id"`
 	Schedules []ScheduleFit `json:"schedules"`
-	Estimate  EstimateFit   `json:"estimate"`
+	Estimate  EstimateFit   `json:"estimate.html"`
 }
 
 type ScheduleFit struct {

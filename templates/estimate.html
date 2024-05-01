@@ -1,0 +1,42 @@
+<!-- templates/estimate.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Estimate Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Estimate Details</h1>
+    <p><strong>ID:</strong> {{.Estimate.ID}}</p>
+    <p><strong>Last Update Date:</strong> {{.Estimate.LastUpdateDate.Format "02.01.2006"}}</p>
+
+    <h2>Material Usage</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Material Name</th>
+            <th>Plan Quantity</th>
+            <th>Fact Quantity</th>
+            <th>Cost per Unit</th>
+            <th>Total Plan Cost</th>
+            <th>Total Fact Cost</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .Estimate.MaterialUsage}}
+        <tr>
+            <td>{{.Material.Name}}</td>
+            <td>{{.PlanQuantity}}</td>
+            <td>{{.FactQuantity}}</td>
+            <td>{{.Material.Cost}}</td>
+            <td>{{mul .PlanQuantity .Material.Cost}}</td>
+            <td>{{mul .FactQuantity .Material.Cost}}</td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

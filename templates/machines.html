@@ -1,0 +1,40 @@
+<!-- templates/construction-machines.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Construction Machines</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Construction Machines</h1>
+    <form action="/machinery" method="get">
+        <label for="start_date">Start Date:</label>
+        <input type="text" id="start_date" name="start_date">
+        <label for="end_date">End Date:</label>
+        <input type="text" id="end_date" name="end_date">
+        <input type="hidden" name="project_id" value="{{.ProjectID}}">
+        <button type="submit">Filter</button>
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Machinery Name</th>
+            <th>Project ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .Machines}}
+        <tr>
+            <td>{{.ID}}</td>
+            <td>{{.Name}}</td>
+            <td><a href="/project/{{.ProjectID}}">{{.ProjectID}}</a></td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
