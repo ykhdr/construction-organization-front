@@ -95,3 +95,33 @@ func GetMachines(query string) ([]model.ConstructionMachinery, error) {
 
 	return machines, nil
 }
+
+func GetWorkTypes(query string) ([]model.WorkType, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var workTypes []model.WorkType
+	err = json.NewDecoder(response.Body).Decode(&workTypes)
+	if err != nil {
+		return nil, err
+	}
+
+	return workTypes, nil
+}
+
+func GetReports(query string) ([]model.Report, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var reports []model.Report
+	err = json.NewDecoder(response.Body).Decode(&reports)
+	if err != nil {
+		return nil, err
+	}
+
+	return reports, nil
+}

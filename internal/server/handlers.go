@@ -195,11 +195,63 @@ func (s *Server) handleMachines(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *Server) handleExceededDeadlinesWorks(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	projectID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting project id")
+		http.Error(w, "Error on getting project id", http.StatusBadRequest)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("templates/exceeded_deadlines.html"))
+	workTypes, err := s.getExceededDeadlinesWorks(projectID)
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting project exceeded deadlines works")
+		http.Error(w, "Error on getting project exceeded deadlines works", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, map[string]interface{}{"WorkTypes": workTypes})
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on executing project exceeded deadlines works template")
+		http.Error(w, "Error on executing project exceeded deadlines works template", http.StatusInternalServerError)
+	}
+}
+
+func (s *Server) handleReport(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	projectID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting project id")
+		http.Error(w, "Error on getting project id", http.StatusBadRequest)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("templates/report.html"))
+	report, err := s.getReports(projectID)
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting project estimate")
+		http.Error(w, "Error on getting project estimate", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, map[string]interface{}{"Report": report})
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on executing project report template")
+		http.Error(w, "Error on executing project report template", http.StatusInternalServerError)
+	}
+}
+
 func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/", s.handleIndex).Methods("GET")
 	s.router.HandleFunc("/project", s.handleProjects).Methods("GET")
 	s.router.HandleFunc("/project/{id:[0-9]+}", s.handleProject).Methods("GET")
 	s.router.HandleFunc("/project/{id:[0-9]+}/estimate", s.handleEstimate).Methods("GET")
+	s.router.HandleFunc("/project/{id:[0-9]+}/exceeded_deadlines_works", s.handleExceededDeadlinesWorks).Methods("GET")
+	s.router.HandleFunc("/project/{id:[0-9]+}/report", s.handleReport).Methods("GET")
 	s.router.HandleFunc("/schedule", s.handleSchedules).Methods("GET")
 	s.router.HandleFunc("/construction_team", s.handleConstructionTeams).Methods("GET")
 	s.router.HandleFunc("/machinery", s.handleMachines).Methods("GET")

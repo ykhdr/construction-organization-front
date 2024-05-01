@@ -1,0 +1,30 @@
+<!-- templates/exceeded-deadlines.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Exceeded Deadlines Works</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Exceeded Deadlines Works</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Work Type ID</th>
+            <th>Work Type Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .WorkTypes}}
+        <tr>
+            <td>{{.ID}}</td>
+            <td>{{.Name}}</td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -88,3 +88,26 @@ func (s *Server) getMachines(projectID int, startDate, endDate string) ([]model.
 
 	return machines, nil
 }
+
+func (s *Server) getExceededDeadlinesWorks(projectID int) ([]model.WorkType, error) {
+	query := "http://" + s.backendUrl + "/api/v1/construction_project/" + strconv.Itoa(projectID) + "/exceeded_deadlines_works"
+
+	workTypes, err := requests.GetWorkTypes(query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return workTypes, nil
+}
+
+func (s *Server) getReports(projectID int) ([]model.Report, error) {
+	query := "http://localhost:8081/api/v1/report/" + strconv.Itoa(projectID)
+
+	reports, err := requests.GetReports(query)
+	if err != nil {
+		return nil, err
+	}
+
+	return reports, nil
+}
