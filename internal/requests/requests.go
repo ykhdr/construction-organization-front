@@ -125,3 +125,18 @@ func GetReports(query string) ([]model.Report, error) {
 
 	return reports, nil
 }
+
+func GetReport(query string) (model.Report, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return model.Report{ID: 0}, err
+	}
+
+	var report model.Report
+	err = json.NewDecoder(response.Body).Decode(&report)
+	if err != nil {
+		return model.Report{ID: 0}, err
+	}
+
+	return report, nil
+}

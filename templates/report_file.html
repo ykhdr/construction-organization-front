@@ -1,0 +1,42 @@
+<!-- templates/report-details.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Report File Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Report File Details (ID: {{.ReportFile.ID}})</h1>
+    <h2>Schedules</h2>
+    <ul>
+        {{range .ReportFile.Schedules}}
+        <li>{{.WorkType.Name}} - from {{.PlanStartDate.Format "02.01.2006"}} to {{.PlanEndDate.Format "02.01.2006"}} (Planned) and from {{.FactStartDate.Format "02.01.2006"}} to {{.FactEndDate.Format "02.01.2006"}} (Actual)</li>
+        {{end}}
+    </ul>
+    <h2>Estimate Details</h2>
+    <p>Last Updated: {{.ReportFile.Estimate.LastUpdateDate.Format "02.01.2006"}}</p>
+    <table>
+        <thead>
+        <tr>
+            <th>Material Name</th>
+            <th>Plan Quantity</th>
+            <th>Fact Quantity</th>
+            <th>Cost</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .ReportFile.Estimate.MaterialUsage}}
+        <tr>
+            <td>{{.Name}}</td>
+            <td>{{.PlanQuantity}}</td>
+            <td>{{.FactQuantity}}</td>
+            <td>{{.Cost}}</td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

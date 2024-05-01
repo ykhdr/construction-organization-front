@@ -102,7 +102,7 @@ func (s *Server) getExceededDeadlinesWorks(projectID int) ([]model.WorkType, err
 }
 
 func (s *Server) getReports(projectID int) ([]model.Report, error) {
-	query := "http://localhost:8081/api/v1/report/" + strconv.Itoa(projectID)
+	query := "http://localhost:8081/api/v1/report?project_id=" + strconv.Itoa(projectID)
 
 	reports, err := requests.GetReports(query)
 	if err != nil {
@@ -110,4 +110,15 @@ func (s *Server) getReports(projectID int) ([]model.Report, error) {
 	}
 
 	return reports, nil
+}
+
+func (s *Server) getReport(reportID int) (model.Report, error) {
+	query := "http://localhost:8081/api/v1/report/" + strconv.Itoa(reportID)
+
+	report, err := requests.GetReport(query)
+	if err != nil {
+		return model.Report{ID: 0}, err
+	}
+
+	return report, nil
 }

@@ -220,7 +220,7 @@ func (s *Server) handleExceededDeadlinesWorks(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (s *Server) handleReport(w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleReports(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	projectID, err := strconv.Atoi(vars["id"])
@@ -230,18 +230,43 @@ func (s *Server) handleReport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/report.html"))
-	report, err := s.getReports(projectID)
+	tmpl := template.Must(template.ParseFiles("templates/reports.html"))
+	reports, err := s.getReports(projectID)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting project estimate")
 		http.Error(w, "Error on getting project estimate", http.StatusInternalServerError)
 		return
 	}
 
-	err = tmpl.Execute(w, map[string]interface{}{"Report": report})
+	err = tmpl.Execute(w, map[string]interface{}{"Reports": reports})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing project report template")
 		http.Error(w, "Error on executing project report template", http.StatusInternalServerError)
+	}
+}
+
+func (s *Server) handleReport(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	reportId, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting report id")
+		http.Error(w, "Error on getting report id", http.StatusBadRequest)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("templates/report_file.html"))
+	report, err := s.getReport(reportId)
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting report")
+		http.Error(w, "Error on getting report", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, map[string]interface{}{"ReportFile": report.ReportFile})
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on executing report template")
+		http.Error(w, "Error on executing report template", http.StatusInternalServerError)
 	}
 }
 
@@ -251,7 +276,8 @@ func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/project/{id:[0-9]+}", s.handleProject).Methods("GET")
 	s.router.HandleFunc("/project/{id:[0-9]+}/estimate", s.handleEstimate).Methods("GET")
 	s.router.HandleFunc("/project/{id:[0-9]+}/exceeded_deadlines_works", s.handleExceededDeadlinesWorks).Methods("GET")
-	s.router.HandleFunc("/project/{id:[0-9]+}/report", s.handleReport).Methods("GET")
+	s.router.HandleFunc("/project/{id:[0-9]+}/report", s.handleReports).Methods("GET")
+	s.router.HandleFunc("/report/{id:[0-9]+}", s.handleReport).Methods("GET")
 	s.router.HandleFunc("/schedule", s.handleSchedules).Methods("GET")
 	s.router.HandleFunc("/construction_team", s.handleConstructionTeams).Methods("GET")
 	s.router.HandleFunc("/machinery", s.handleMachines).Methods("GET")
