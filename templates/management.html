@@ -1,0 +1,23 @@
+<!-- templates/project.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Management Details: {{.Management.Name}}</h1>
+    <p><strong>ID:</strong> {{.Management.ID}}</p>
+    <p><strong>ManagerID:</strong> <a href="/engineer/{{.Management.ManagerID}}">{{.Management.ManagerID}}</a></p>
+
+    <h2>Management Resources</h2>
+    <div class="resources">
+        <a href="/project?management_id={{.Management.ID}}">Projects</a>
+        <a href="/engineer?management_id={{.Management.ID}}">Engineers Teams</a>
+        <a href="/machinery?management_id={{.Management.ID}}">Machines</a>
+    </div>
+</div>
+</body>
+</html>

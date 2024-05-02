@@ -1,0 +1,44 @@
+<!-- templates/engineer-details.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Engineer Worker Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Engineer Worker Details</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <td>{{.Engineer.ID}}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{.Engineer.Name}} {{.Engineer.Patronymic}} {{.Engineer.Surname}}</td>
+        </tr>
+        <tr>
+            <th>Position</th>
+            <td>{{.Engineer.Position.Name}}</td>
+        </tr>
+        <tr>
+            <th>Age</th>
+            <td>{{.Engineer.Age}}</td>
+        </tr>
+        <tr>
+            <th>Seniority</th>
+            <td>{{.Engineer.Seniority}} years</td>
+        </tr>
+        <tr>
+            <th>Team ID</th>
+            <td>{{.Engineer.TeamID}}</td>
+        </tr>
+        <tr>
+            <th>Building Organization ID</th>
+            <td>{{.Engineer.BuildingOrganizationID}}</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

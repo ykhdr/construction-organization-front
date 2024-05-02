@@ -133,10 +133,71 @@ func GetReport(query string) (model.Report, error) {
 	}
 
 	var report model.Report
+
 	err = json.NewDecoder(response.Body).Decode(&report)
 	if err != nil {
 		return model.Report{ID: 0}, err
 	}
 
 	return report, nil
+}
+
+func GetEngineers(query string) ([]model.EngineerWorker, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var engineers []model.EngineerWorker
+	err = json.NewDecoder(response.Body).Decode(&engineers)
+	if err != nil {
+		return nil, err
+	}
+
+	return engineers, nil
+}
+
+func GetEngineer(query string) (model.EngineerWorker, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return model.EngineerWorker{ID: 0}, err
+	}
+
+	var engineer model.EngineerWorker
+	err = json.NewDecoder(response.Body).Decode(&engineer)
+	if err != nil {
+		return model.EngineerWorker{ID: 0}, err
+	}
+
+	return engineer, nil
+}
+
+func GetManagements(query string) ([]model.ConstructionManagement, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var managements []model.ConstructionManagement
+	err = json.NewDecoder(response.Body).Decode(&managements)
+	if err != nil {
+		return nil, err
+	}
+
+	return managements, nil
+}
+
+func GetManagement(query string) (model.ConstructionManagement, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return model.ConstructionManagement{ID: 0}, err
+	}
+
+	var management model.ConstructionManagement
+	err = json.NewDecoder(response.Body).Decode(&management)
+	if err != nil {
+		return model.ConstructionManagement{ID: 0}, err
+	}
+
+	return management, nil
 }
