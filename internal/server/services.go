@@ -59,12 +59,14 @@ func (s *Server) getEstimate(projectID int) (model.Estimate, error) {
 	return estimate, nil
 }
 
-func (s *Server) getConstructionTeams(projectID int) ([]model.ConstructionTeam, error) {
-	var query = ""
+func (s *Server) getConstructionTeams(projectID, workTypeID int, startDate, endDate string) ([]model.ConstructionTeam, error) {
+	var query = "http://" + s.backendUrl + "/api/v1"
 	if projectID != 0 {
-		query = "http://" + s.backendUrl + "/api/v1/construction_project/" + strconv.Itoa(projectID) + "/construction_teams"
+		query = query + "/construction_project/" + strconv.Itoa(projectID) + "/construction_teams"
+	} else if workTypeID != 0 {
+		query = query + "/construction_team?work_type=" + strconv.Itoa(workTypeID) + "&start_date=" + startDate + "&end_date=" + endDate
 	} else {
-		query = "http://" + s.backendUrl + "/api/v1/construction_team"
+		query = query + "/construction_team"
 	}
 
 	teams, err := requests.GetConstructionTeams(query)
@@ -183,8 +185,13 @@ func (s *Server) getManagement(managementID int) (model.ConstructionManagement, 
 	return management, nil
 }
 
-func (s *Server) getWorkTypes() ([]model.WorkType, error) {
-	query := "http://" + s.backendUrl + "/api/v1/work_type"
+func (s *Server) getWorkTypes(teamID int, startDate, endDate string) ([]model.WorkType, error) {
+	query := "http://" + s.backendUrl + "/api/v1"
+	if teamID != 0 {
+		query += "/construction_team/" + strconv.Itoa(teamID) + "/work_types" + "?start_date=" + startDate + "&end_date=" + endDate
+	} else {
+		query += "/work_types"
+	}
 
 	workTypes, err := requests.GetWorkTypes(query)
 	if err != nil {
@@ -192,4 +199,15 @@ func (s *Server) getWorkTypes() ([]model.WorkType, error) {
 	}
 
 	return workTypes, nil
+}
+
+func (s *Server) getConstructionTeam(teamID int) (model.ConstructionTeam, error) {
+	query := "http://" + s.backendUrl + "/api/v1/construction_team/" + strconv.Itoa(teamID)
+
+	team, err := requests.GetConstructionTeam(query)
+	if err != nil {
+		return model.ConstructionTeam{ID: 0}, err
+	}
+
+	return team, nil
 }

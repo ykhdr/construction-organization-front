@@ -201,3 +201,18 @@ func GetManagement(query string) (model.ConstructionManagement, error) {
 
 	return management, nil
 }
+
+func GetConstructionTeam(query string) (model.ConstructionTeam, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return model.ConstructionTeam{ID: 0}, err
+	}
+
+	var team model.ConstructionTeam
+	err = json.NewDecoder(response.Body).Decode(&team)
+	if err != nil {
+		return model.ConstructionTeam{ID: 0}, err
+	}
+
+	return team, nil
+}

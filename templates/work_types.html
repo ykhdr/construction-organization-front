@@ -1,0 +1,39 @@
+<!-- templates/engineers-list.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Work Types List</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Work Types List of {{.ConstructionTeam.Name}}</h1>
+    <form action="/construction_team/{{.ConstructionTeam.ID}}/work_types" method="get">
+        <label for="startDate">Start Date:</label>
+        <input type="text" id="startDate" name="start_date">
+
+        <label for="endDate">End Date:</label>
+        <input type="text" id="endDate" name="end_date">
+
+        <button type="submit">Filter</button>
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .WorkTypes}}
+        <tr>
+            <td>{{.ID}}</td>
+            <td>{{.Name}}</td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

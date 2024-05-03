@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
@@ -146,7 +147,24 @@ func (s *Server) handleEstimate(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleConstructionTeams(w http.ResponseWriter, r *http.Request) {
 	var projectID int
+	var workTypeID int
+
 	projectIDStr := r.URL.Query().Get("project_id")
+	workTypeIDStr := r.URL.Query().Get("work_type")
+	startDate := r.URL.Query().Get("start_date")
+	endDate := r.URL.Query().Get("end_date")
+
+	if workTypeIDStr != "" {
+		id, err := strconv.Atoi(workTypeIDStr)
+		if err != nil {
+			log.Logger.WithError(err).Error("Error on getting work type id")
+			http.Error(w, "Error on getting work type id", http.StatusBadRequest)
+			return
+		}
+		workTypeID = id
+	} else {
+		workTypeID = 0
+	}
 
 	if projectIDStr != "" {
 		id, err := strconv.Atoi(projectIDStr)
@@ -161,14 +179,24 @@ func (s *Server) handleConstructionTeams(w http.ResponseWriter, r *http.Request)
 		projectID = 0
 	}
 
+	if _, err := time.Parse("2006-01-02", startDate); startDate != "" && err != nil {
+		http.Error(w, "Invalid start date format. Use YYYY-MM-DD format.", http.StatusBadRequest)
+		return
+	}
+
+	if _, err := time.Parse("2006-01-02", endDate); endDate != "" && err != nil {
+		http.Error(w, "Invalid end date format. Use YYYY-MM-DD format.", http.StatusBadRequest)
+		return
+	}
+
 	tmpl := template.Must(template.ParseFiles("templates/construction_teams.html"))
-	teams, err := s.getConstructionTeams(projectID)
+	teams, err := s.getConstructionTeams(projectID, workTypeID, startDate, endDate)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting project schedules")
 		http.Error(w, "Error on getting project schedules", http.StatusInternalServerError)
 		return
 	}
-	workTypes, err := s.getWorkTypes()
+	workTypes, err := s.getWorkTypes(0, "", "")
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting work types")
 		http.Error(w, "Error on getting work types", http.StatusInternalServerError)
@@ -407,19 +435,100 @@ func (s *Server) handleManagement(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *Server) handleConstructionTeam(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	teamID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting team id")
+		http.Error(w, "Error on getting team id", http.StatusBadRequest)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("templates/construction_team.html"))
+	constructionTeam, err := s.getConstructionTeam(teamID)
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting construction team")
+		http.Error(w, "Error on getting construction team", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, map[string]interface{}{"ConstructionTeam": constructionTeam})
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on executing construction team template")
+		http.Error(w, "Error on executing construction team template", http.StatusInternalServerError)
+	}
+}
+
+func (s *Server) handleConstructionTeamWorkTypes(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	startDate := r.URL.Query().Get("start_date")
+	endDate := r.URL.Query().Get("end_date")
+
+	teamID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting team id")
+		http.Error(w, "Error on getting team id", http.StatusBadRequest)
+		return
+	}
+
+	if _, err := time.Parse("2006-01-02", startDate); startDate != "" && err != nil {
+		http.Error(w, "Invalid start date format. Use YYYY-MM-DD format.", http.StatusBadRequest)
+		return
+	}
+
+	if _, err := time.Parse("2006-01-02", endDate); endDate != "" && err != nil {
+		http.Error(w, "Invalid end date format. Use YYYY-MM-DD format.", http.StatusBadRequest)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("templates/work_types.html"))
+	workTypes, err := s.getWorkTypes(teamID, startDate, endDate)
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting work types")
+		http.Error(w, "Error on getting work types", http.StatusInternalServerError)
+		return
+	}
+	constructionTeam, err := s.getConstructionTeam(teamID)
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting construction team")
+		http.Error(w, "Error on getting construction team", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, map[string]interface{}{
+		"WorkTypes":        workTypes,
+		"ConstructionTeam": constructionTeam,
+	})
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on executing work types template")
+		http.Error(w, "Error on executing work types template", http.StatusInternalServerError)
+	}
+}
+
 func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/", s.handleIndex).Methods("GET")
+
 	s.router.HandleFunc("/project", s.handleProjects).Methods("GET")
 	s.router.HandleFunc("/project/{id:[0-9]+}", s.handleProject).Methods("GET")
 	s.router.HandleFunc("/project/{id:[0-9]+}/estimate", s.handleEstimate).Methods("GET")
 	s.router.HandleFunc("/project/{id:[0-9]+}/exceeded_deadlines_works", s.handleExceededDeadlinesWorks).Methods("GET")
 	s.router.HandleFunc("/project/{id:[0-9]+}/report", s.handleReports).Methods("GET")
+
 	s.router.HandleFunc("/report/{id:[0-9]+}", s.handleReport).Methods("GET")
+
 	s.router.HandleFunc("/schedule", s.handleSchedules).Methods("GET")
+
 	s.router.HandleFunc("/construction_team", s.handleConstructionTeams).Methods("GET")
+	s.router.HandleFunc("/construction_team/{id:[0-9]+}", s.handleConstructionTeam).Methods("GET")
+	s.router.HandleFunc("/construction_team/{id:[0-9]+}/work_types", s.handleConstructionTeamWorkTypes).Methods("GET")
+
 	s.router.HandleFunc("/machinery", s.handleMachines).Methods("GET")
+
 	s.router.HandleFunc("/engineer", s.handleEngineers).Methods("GET")
 	s.router.HandleFunc("/engineer/{id:[0-9]+}", s.handleEngineer).Methods("GET")
+
 	s.router.HandleFunc("/management", s.handleManagements).Methods("GET")
 	s.router.HandleFunc("/management/{id:[0-9]+}", s.handleManagement).Methods("GET")
 }

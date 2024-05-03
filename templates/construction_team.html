@@ -1,0 +1,22 @@
+<!-- templates/project.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Construction Team Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Construction Team Details: {{.ConstructionTeam.Name}}</h1>
+    <p><strong>ID:</strong> {{.ConstructionTeam.ID}}</p>
+    <p><strong>Project ID:</strong> <a href="/project/{{.ConstructionTeam.ProjectID}}">{{.ConstructionTeam.ProjectID}}</a></p>
+
+    <h2>Construction Team Resources</h2>
+    <div class="resources">
+        <a href="/construction_team/{{.ConstructionTeam.ID}}/work_types">Work Types</a>
+    </div>
+
+</div>
+</body>
+</html>
