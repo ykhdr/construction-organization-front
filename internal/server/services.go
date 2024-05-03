@@ -248,3 +248,21 @@ func (s *Server) getExceededUsageMaterials(estimateID int) ([]model.Material, er
 
 	return materials, nil
 }
+
+func (s *Server) createReport(projectID int) error {
+	query := "http://localhost:8081/api/v1/report/create?project_id=" + strconv.Itoa(projectID)
+
+	err := requests.CreateReport(query)
+	return err
+}
+
+func (s *Server) getBuildingSites() ([]model.BuildingSite, error) {
+	query := "http://" + s.backendUrl + "/api/v1/building_site"
+
+	sites, err := requests.GetBuildingSites(query)
+	if err != nil {
+		return nil, err
+	}
+
+	return sites, nil
+}

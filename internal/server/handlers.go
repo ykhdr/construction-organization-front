@@ -321,7 +321,10 @@ func (s *Server) handleReports(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = tmpl.Execute(w, map[string]interface{}{"Reports": reports})
+	err = tmpl.Execute(w, map[string]interface{}{
+		"Reports":   reports,
+		"ProjectID": projectID,
+	})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing project report template")
 		http.Error(w, "Error on executing project report template", http.StatusInternalServerError)
@@ -346,7 +349,9 @@ func (s *Server) handleReport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = tmpl.Execute(w, map[string]interface{}{"ReportFile": report.ReportFile})
+	err = tmpl.Execute(w, map[string]interface{}{
+		"ReportFile": report.ReportFile,
+	})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing report template")
 		http.Error(w, "Error on executing report template", http.StatusInternalServerError)
@@ -554,6 +559,21 @@ func (s *Server) handleBuildingOrganization(w http.ResponseWriter, r *http.Reque
 	}
 }
 
+func (s *Server) handleBuildingSites(w http.ResponseWriter, r *http.Request) {
+	sites, err := s.getBuildingSites()
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting building sites")
+		http.Error(w, "Error on getting building sites", http.StatusInternalServerError)
+		return
+	}
+	tmpl := template.Must(template.ParseFiles("templates/building_sites.html"))
+	err = tmpl.Execute(w, map[string]interface{}{"BuildingSites": sites})
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on executing building sites template")
+		http.Error(w, "Error on executing building sites template", http.StatusInternalServerError)
+	}
+}
+
 func (s *Server) handleBuildingSite(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
@@ -578,6 +598,26 @@ func (s *Server) handleBuildingSite(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *Server) handleCreateReport(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	projectID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting project id")
+		http.Error(w, "Error on getting project id", http.StatusBadRequest)
+		return
+	}
+
+	err = s.createReport(projectID)
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on creating report")
+		http.Error(w, "Error on creating report", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/project/"+strconv.Itoa(projectID)+"/report", http.StatusSeeOther)
+}
+
 func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/", s.handleIndex).Methods("GET")
 
@@ -588,6 +628,7 @@ func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/project/{id:[0-9]+}/report", s.handleReports).Methods("GET")
 
 	s.router.HandleFunc("/report/{id:[0-9]+}", s.handleReport).Methods("GET")
+	s.router.HandleFunc("/report/{id:[0-9]+}/create", s.handleCreateReport).Methods("GET")
 
 	s.router.HandleFunc("/schedule", s.handleSchedules).Methods("GET")
 
@@ -605,5 +646,6 @@ func (s *Server) initializeRoutes() {
 
 	s.router.HandleFunc("/building_organization/{id:[0-9]+}", s.handleBuildingOrganization).Methods("GET")
 
+	s.router.HandleFunc("/building_site", s.handleBuildingSites).Methods("GET")
 	s.router.HandleFunc("/building_site/{id:[0-9]+}", s.handleBuildingSite).Methods("GET")
 }

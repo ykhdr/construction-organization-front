@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Building Sites</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Building Sites</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Address</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .BuildingSites}}
+        <tr>
+            <td>{{.ID}}</td>
+            <td>{{.Address}}</td>
+            <td><a href="/building_site/{{.ID}}">View Details</a></td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
