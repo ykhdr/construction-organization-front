@@ -9,6 +9,26 @@
 <body>
 <div class="container">
     <h1>Construction Teams</h1>
+
+    <!-- Форма фильтра -->
+    <form action="/construction-teams" method="get">
+        <label for="workType">Work Type:</label>
+        <select id="workType" name="work_type">
+            <option value="">All Types</option>
+            {{range .WorkTypes}}
+            <option value="{{.ID}}">{{.Name}}</option>
+            {{end}}
+        </select>
+
+        <label for="startDate">Start Date:</label>
+        <input type="text" id="startDate" name="start_date">
+
+        <label for="endDate">End Date:</label>
+        <input type="text" id="endDate" name="end_date">
+
+        <button type="submit">Filter</button>
+    </form>
+
     <table>
         <thead>
         <tr>

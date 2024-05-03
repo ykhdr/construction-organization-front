@@ -168,8 +168,17 @@ func (s *Server) handleConstructionTeams(w http.ResponseWriter, r *http.Request)
 		http.Error(w, "Error on getting project schedules", http.StatusInternalServerError)
 		return
 	}
+	workTypes, err := s.getWorkTypes()
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting work types")
+		http.Error(w, "Error on getting work types", http.StatusInternalServerError)
+		return
+	}
 
-	err = tmpl.Execute(w, map[string]interface{}{"ConstructionTeams": teams})
+	err = tmpl.Execute(w, map[string]interface{}{
+		"ConstructionTeams": teams,
+		"WorkTypes":         workTypes,
+	})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing project schedules template")
 		http.Error(w, "Error on executing project schedules template", http.StatusInternalServerError)

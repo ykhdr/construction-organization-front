@@ -15,7 +15,6 @@
             <th>ID</th>
             <th>Name</th>
             <th>Position</th>
-            <th>Skill Level</th>
             <th>Details</th>
         </tr>
         </thead>
@@ -25,7 +24,6 @@
             <td>{{.ID}}</td>
             <td>{{.Name}} {{.Patronymic}} {{.Surname}}</td>
             <td>{{.Position.Name}}</td>
-            <td>{{.SkillLevel}}</td>
             <td><a href="/engineer/{{.ID}}">View Details</a></td>
         </tr>
         {{end}}

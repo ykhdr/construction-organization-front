@@ -64,7 +64,7 @@ func (s *Server) getConstructionTeams(projectID int) ([]model.ConstructionTeam, 
 	if projectID != 0 {
 		query = "http://" + s.backendUrl + "/api/v1/construction_project/" + strconv.Itoa(projectID) + "/construction_teams"
 	} else {
-		query = "http://" + s.backendUrl + "/api/v1/construction_teams"
+		query = "http://" + s.backendUrl + "/api/v1/construction_team"
 	}
 
 	teams, err := requests.GetConstructionTeams(query)
@@ -181,4 +181,15 @@ func (s *Server) getManagement(managementID int) (model.ConstructionManagement, 
 	}
 
 	return management, nil
+}
+
+func (s *Server) getWorkTypes() ([]model.WorkType, error) {
+	query := "http://" + s.backendUrl + "/api/v1/work_type"
+
+	workTypes, err := requests.GetWorkTypes(query)
+	if err != nil {
+		return nil, err
+	}
+
+	return workTypes, nil
 }
