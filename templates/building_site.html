@@ -1,0 +1,24 @@
+<!-- templates/project.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Building Site Details</h1>
+    <p><strong>ID:</strong> {{.BuildingSite.ID}}</p>
+    <p><strong>Address:</strong> {{.BuildingSite.Address}}</p>
+    <p><strong>ManagementID:</strong> <a href="/management/{{.BuildingSite.ManagementID}}">{{.BuildingSite.ManagementID}}</a></p>
+    <p><strong>ManagerID:</strong> <a href="/engineer/{{.BuildingSite.ManagerID}}">{{.BuildingSite.ManagerID}}</a></p>
+
+    <h2>Management Resources</h2>
+    <div class="resources">
+        <a href="/engineer?building_site={{.BuildingSite.ID}}">Engineers Teams</a>
+        <a href="project?building_site={{.BuildingSite.ID}}">Projects</a>
+    </div>
+</div>
+</body>
+</html>

@@ -507,6 +507,49 @@ func (s *Server) handleConstructionTeamWorkTypes(w http.ResponseWriter, r *http.
 	}
 }
 
+func (s *Server) handleBuildingOrganization(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	organizationID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting organization id")
+		http.Error(w, "Error on getting organization id", http.StatusBadRequest)
+		return
+	}
+
+	organization, err := s.getBuildingOrganization(organizationID)
+	tmpl := template.Must(template.ParseFiles("templates/building_organization.html"))
+	err = tmpl.Execute(w, map[string]interface{}{"BuildingOrganization": organization})
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on executing building organization template")
+		http.Error(w, "Error on executing building organization template", http.StatusInternalServerError)
+	}
+}
+
+func (s *Server) handleBuildingSite(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	siteID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting site id")
+		http.Error(w, "Error on getting site id", http.StatusBadRequest)
+		return
+	}
+
+	site, err := s.getBuildingSite(siteID)
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting site")
+		http.Error(w, "Error on getting site", http.StatusInternalServerError)
+		return
+	}
+	tmpl := template.Must(template.ParseFiles("templates/building_site.html"))
+	err = tmpl.Execute(w, map[string]interface{}{"BuildingSite": site})
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on executing building site template")
+		http.Error(w, "Error on executing building site template", http.StatusInternalServerError)
+	}
+}
+
 func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/", s.handleIndex).Methods("GET")
 
@@ -531,4 +574,8 @@ func (s *Server) initializeRoutes() {
 
 	s.router.HandleFunc("/management", s.handleManagements).Methods("GET")
 	s.router.HandleFunc("/management/{id:[0-9]+}", s.handleManagement).Methods("GET")
+
+	s.router.HandleFunc("/building_organization/{id:[0-9]+}", s.handleBuildingOrganization).Methods("GET")
+
+	s.router.HandleFunc("/building_site/{id:[0-9]+}", s.handleBuildingSite).Methods("GET")
 }

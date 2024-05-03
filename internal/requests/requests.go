@@ -216,3 +216,33 @@ func GetConstructionTeam(query string) (model.ConstructionTeam, error) {
 
 	return team, nil
 }
+
+func GetBuildingOrganization(query string) (model.BuildingOrganization, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return model.BuildingOrganization{ID: 0}, err
+	}
+
+	var organization model.BuildingOrganization
+	err = json.NewDecoder(response.Body).Decode(&organization)
+	if err != nil {
+		return model.BuildingOrganization{ID: 0}, err
+	}
+
+	return organization, nil
+}
+
+func GetBuildingSite(query string) (model.BuildingSite, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return model.BuildingSite{ID: 0}, err
+	}
+
+	var site model.BuildingSite
+	err = json.NewDecoder(response.Body).Decode(&site)
+	if err != nil {
+		return model.BuildingSite{ID: 0}, err
+	}
+
+	return site, nil
+}

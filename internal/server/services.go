@@ -211,3 +211,25 @@ func (s *Server) getConstructionTeam(teamID int) (model.ConstructionTeam, error)
 
 	return team, nil
 }
+
+func (s *Server) getBuildingOrganization(organizationID int) (model.BuildingOrganization, error) {
+	query := "http://" + s.backendUrl + "/api/v1/building_organization/" + strconv.Itoa(organizationID)
+
+	organization, err := requests.GetBuildingOrganization(query)
+	if err != nil {
+		return model.BuildingOrganization{ID: 0}, err
+	}
+
+	return organization, nil
+}
+
+func (s *Server) getBuildingSite(siteID int) (model.BuildingSite, error) {
+	query := "http://" + s.backendUrl + "/api/v1/building_site/" + strconv.Itoa(siteID)
+
+	site, err := requests.GetBuildingSite(query)
+	if err != nil {
+		return model.BuildingSite{ID: 0}, err
+	}
+
+	return site, nil
+}

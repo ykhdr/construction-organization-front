@@ -28,7 +28,7 @@
             {{range .Schedules}}
             <tr>
                 <td>{{.ID}}</td>
-                <td>{{.ConstructionTeamID}}</td>
+                <td><a href="/construction_team/{{.ConstructionTeamID}}">{{.ConstructionTeamID}}</a></td>
                 <td>{{.WorkType.Name}}</td>
                 <td>{{.PlanStartDate.Format "02.01.2006"}}</td>
                 <td>{{.PlanEndDate.Format "02.01.2006"}}</td>
