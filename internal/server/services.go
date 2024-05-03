@@ -77,15 +77,15 @@ func (s *Server) getConstructionTeams(projectID, workTypeID int, startDate, endD
 	return teams, nil
 }
 
-func (s *Server) getMachines(projectID, managerID int, startDate, endDate string) ([]model.ConstructionMachinery, error) {
+func (s *Server) getMachines(projectID, managementID int, startDate, endDate string) ([]model.ConstructionMachinery, error) {
 	var query = "http://" + s.backendUrl + "/api/v1"
 	if projectID != 0 {
 		query = query + "/construction_project/" + strconv.Itoa(projectID) + "/machines"
 		if startDate != "" || endDate != "" {
 			query = query + "?start_date=" + startDate + "&end_date=" + endDate
 		}
-	} else if managerID != 0 {
-		query = query + "/construction_management/" + strconv.Itoa(managerID) + "/machines"
+	} else if managementID != 0 {
+		query = query + "/construction_management/" + strconv.Itoa(managementID) + "/machines"
 	} else {
 		query = query + "/construction_machinery"
 	}

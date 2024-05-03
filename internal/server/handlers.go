@@ -214,12 +214,15 @@ func (s *Server) handleConstructionTeams(w http.ResponseWriter, r *http.Request)
 }
 
 func (s *Server) handleMachines(w http.ResponseWriter, r *http.Request) {
-	var projectID int
-	var managerID int
-	managerIDStr := r.URL.Query().Get("manager_id")
-	projectIDStr := r.URL.Query().Get("project_id")
-	startDate := r.URL.Query().Get("start_date")
-	endDate := r.URL.Query().Get("end_date")
+	var (
+		projectID    = 0
+		managementID = 0
+
+		projectIDStr    = r.URL.Query().Get("project_id")
+		managementIDStr = r.URL.Query().Get("management_id")
+		startDate       = r.URL.Query().Get("start_date")
+		endDate         = r.URL.Query().Get("end_date")
+	)
 
 	if projectIDStr != "" {
 		id, err := strconv.Atoi(projectIDStr)
@@ -230,25 +233,20 @@ func (s *Server) handleMachines(w http.ResponseWriter, r *http.Request) {
 		}
 
 		projectID = id
-	} else {
-		projectID = 0
 	}
 
-	if managerIDStr != "" {
-		id, err := strconv.Atoi(managerIDStr)
+	if managementIDStr != "" {
+		id, err := strconv.Atoi(managementIDStr)
 		if err != nil {
-			log.Logger.WithError(err).Error("Error on getting manager id")
-			http.Error(w, "Error on getting manager id", http.StatusBadRequest)
+			log.Logger.WithError(err).Error("Error on getting management id")
+			http.Error(w, "Error on getting management id", http.StatusBadRequest)
 			return
 		}
-
-		managerID = id
-	} else {
-		managerID = 0
+		managementID = id
 	}
 
 	tmpl := template.Must(template.ParseFiles("templates/machines.html"))
-	machines, err := s.getMachines(projectID, managerID, startDate, endDate)
+	machines, err := s.getMachines(projectID, managementID, startDate, endDate)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting project machines")
 		http.Error(w, "Error on getting project machines", http.StatusInternalServerError)
