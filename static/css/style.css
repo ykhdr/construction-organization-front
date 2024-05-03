@@ -63,3 +63,35 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px; /* Отступ снизу для меток */
+}
+
+input[type="date"],
+input[type="number"],
+select,
+button {
+    margin-bottom: 20px;
+    padding: 10px;
+    width: 50%;
+    align-self: center;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4CAF50; /* Зелёный фон для кнопки */
+    color: white; /* Белый текст для кнопки */
+    border: none; /* Убрать границу у кнопки */
+    cursor: pointer; /* Курсор в виде указателя для кнопки */
+    transition: background-color 0.3s; /* Плавное изменение цвета фона */
+}
+
+button:hover {
+    background-color: #45a049; /* Темно-зелёный фон при наведении */
+}

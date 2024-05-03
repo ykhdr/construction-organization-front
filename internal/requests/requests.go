@@ -1,8 +1,11 @@
 package requests
 
 import (
+	"bytes"
 	"construction-organization-system/construction-organization-front/internal/model"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -284,4 +287,18 @@ func GetBuildingSites(query string) ([]model.BuildingSite, error) {
 	}
 
 	return sites, nil
+}
+
+func SaveWorkSchedule(query string, schedule *model.WorkSchedule) error {
+
+	response, err := http.Post(query, "application/json", bytes.NewBuffer([]byte(fmt.Sprintf("%v", schedule))))
+	if err != nil {
+		return err
+	}
+
+	if response.StatusCode == 200 || response.StatusCode == 201 {
+		return nil
+	}
+
+	return errors.New("failed to save work schedule")
 }

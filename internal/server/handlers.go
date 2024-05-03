@@ -2,6 +2,7 @@ package server
 
 import (
 	"construction-organization-system/construction-organization-front/internal/log"
+	"construction-organization-system/construction-organization-front/internal/model"
 	"construction-organization-system/construction-organization-front/internal/util"
 	"construction-organization-system/construction-organization-front/internal/view"
 	"github.com/gorilla/mux"
@@ -618,6 +619,104 @@ func (s *Server) handleCreateReport(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/project/"+strconv.Itoa(projectID)+"/report", http.StatusSeeOther)
 }
 
+func (s *Server) handleCreateSchedulePage(w http.ResponseWriter, r *http.Request) {
+	projects, err := s.getProjects(0, 0)
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting projects")
+		http.Error(w, "Error on getting projects", http.StatusInternalServerError)
+		return
+	}
+
+	workTypes, err := s.getWorkTypes(0, "", "")
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting work types")
+		http.Error(w, "Error on getting work types", http.StatusInternalServerError)
+		return
+	}
+
+	teams, err := s.getConstructionTeams(0, 0, "", "")
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting construction teams")
+		http.Error(w, "Error on getting construction teams", http.StatusInternalServerError)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("templates/schedules_create.html"))
+	err = tmpl.Execute(w, map[string]interface{}{"Projects": projects, "WorkTypes": workTypes, "ConstructionTeams": teams})
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on executing schedule create template")
+		http.Error(w, "Error on executing schedule create template", http.StatusInternalServerError)
+	}
+}
+
+func (s *Server) handleCreateSchedule(w http.ResponseWriter, r *http.Request) {
+
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Error parsing the form", http.StatusBadRequest)
+		return
+	}
+
+	// Извлекаем данные из формы
+	constructionTeamID, err := strconv.Atoi(r.FormValue("construction_team_id"))
+	if err != nil {
+		http.Error(w, "Invalid construction team ID", http.StatusBadRequest)
+		return
+	}
+
+	workTypeID, err := strconv.Atoi(r.FormValue("work_type_id"))
+	if err != nil {
+		http.Error(w, "Invalid work type ID", http.StatusBadRequest)
+		return
+	}
+
+	projectID, err := strconv.Atoi(r.FormValue("project_id"))
+	if err != nil {
+		http.Error(w, "Invalid project ID", http.StatusBadRequest)
+		return
+	}
+
+	planStartDate, err := time.Parse("2006-01-02", r.FormValue("plan_start_date"))
+	if err != nil {
+		http.Error(w, "Invalid plan start date", http.StatusBadRequest)
+		return
+	}
+
+	planEndDate, err := time.Parse("2006-01-02", r.FormValue("plan_end_date"))
+	if err != nil {
+		http.Error(w, "Invalid plan end date", http.StatusBadRequest)
+		return
+	}
+
+	factStartDate, _ := time.Parse("2006-01-02", r.FormValue("fact_start_date")) // Ошибка игнорируется, если дата не указана
+	factEndDate, _ := time.Parse("2006-01-02", r.FormValue("fact_end_date"))     // Ошибка игнорируется, если дата не указана
+
+	planOrder, _ := strconv.Atoi(r.FormValue("plan_order")) // Подобные ошибки можно игнорировать или обработать
+	factOrder, _ := strconv.Atoi(r.FormValue("fact_order"))
+
+	// Создание структуры WorkSchedule
+	newSchedule := &model.WorkSchedule{
+		ConstructionTeamID: constructionTeamID,
+		WorkType:           model.WorkType{ID: workTypeID},
+		ProjectID:          projectID,
+		PlanStartDate:      planStartDate,
+		PlanEndDate:        planEndDate,
+		FactStartDate:      factStartDate,
+		FactEndDate:        factEndDate,
+		PlanOrder:          planOrder,
+		FactOrder:          factOrder,
+	}
+
+	err = s.saveWorkSchedule(newSchedule)
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on saving work schedule")
+		http.Error(w, "Error on saving work schedule", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/schedule?project_id="+strconv.Itoa(projectID), http.StatusSeeOther)
+}
+
 func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/", s.handleIndex).Methods("GET")
 
@@ -631,6 +730,8 @@ func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/report/{id:[0-9]+}/create", s.handleCreateReport).Methods("GET")
 
 	s.router.HandleFunc("/schedule", s.handleSchedules).Methods("GET")
+	s.router.HandleFunc("/schedule/create", s.handleCreateSchedulePage).Methods("GET")
+	s.router.HandleFunc("/schedule/create", s.handleCreateSchedule).Methods("POST")
 
 	s.router.HandleFunc("/construction_team", s.handleConstructionTeams).Methods("GET")
 	s.router.HandleFunc("/construction_team/{id:[0-9]+}", s.handleConstructionTeam).Methods("GET")

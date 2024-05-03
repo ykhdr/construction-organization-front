@@ -266,3 +266,10 @@ func (s *Server) getBuildingSites() ([]model.BuildingSite, error) {
 
 	return sites, nil
 }
+
+func (s *Server) saveWorkSchedule(workSchedule *model.WorkSchedule) error {
+	query := "http://" + s.backendUrl + "/api/v1/work_schedule"
+
+	err := requests.SaveWorkSchedule(query, workSchedule)
+	return err
+}

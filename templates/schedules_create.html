@@ -1,0 +1,56 @@
+<!-- templates/add-work-schedule.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Work Schedule</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Add Work Schedule</h1>
+    <form action="/schedule/create" method="post">
+        <label for="constructionTeamID">Construction Team:</label>
+        <select id="constructionTeamID" name="construction_team_id" required>
+            {{range .ConstructionTeams}}
+            <option value="{{.ID}}">{{.Name}}</option>
+            {{end}}
+        </select>
+
+        <label for="workTypeID">Work Type:</label>
+        <select id="workTypeID" name="work_type_id" required>
+            {{range .WorkTypes}}
+            <option value="{{.ID}}">{{.Name}}</option>
+            {{end}}
+        </select>
+
+        <label for="projectID">Project:</label>
+        <select id="projectID" name="project_id" required>
+            {{range .Projects}}
+            <option value="{{.ID}}">{{.Name}}</option>
+            {{end}}
+        </select>
+
+        <label for="planStartDate">Plan Start Date:</label>
+        <input type="date" id="planStartDate" name="plan_start_date" required>
+
+        <label for="planEndDate">Plan End Date:</label>
+        <input type="date" id="planEndDate" name="plan_end_date" required>
+
+        <label for="factStartDate">Fact Start Date:</label>
+        <input type="date" id="factStartDate" name="fact_start_date">
+
+        <label for="factEndDate">Fact End Date:</label>
+        <input type="date" id="factEndDate" name="fact_end_date">
+
+        <label for="planOrder">Plan Order:</label>
+        <input type="number" id="planOrder" name="plan_order" required>
+
+        <label for="factOrder">Fact Order:</label>
+        <input type="number" id="factOrder" name="fact_order">
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+</body>
+</html>
