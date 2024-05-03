@@ -27,8 +27,13 @@ func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleProjects(w http.ResponseWriter, r *http.Request) {
-	var managementID int
-	managementIDStr := r.URL.Query().Get("management_id")
+	var (
+		managementID   = 0
+		buildingSiteID = 0
+
+		managementIDStr   = r.URL.Query().Get("management_id")
+		buildingSiteIDStr = r.URL.Query().Get("building_site_id")
+	)
 
 	if managementIDStr != "" {
 		id, err := strconv.Atoi(managementIDStr)
@@ -37,14 +42,21 @@ func (s *Server) handleProjects(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error on getting management id", http.StatusBadRequest)
 			return
 		}
-
 		managementID = id
-	} else {
-		managementID = 0
+	}
+
+	if buildingSiteIDStr != "" {
+		id, err := strconv.Atoi(buildingSiteIDStr)
+		if err != nil {
+			log.Logger.WithError(err).Error("Error on getting building site id")
+			http.Error(w, "Error on getting building site id", http.StatusBadRequest)
+			return
+		}
+		buildingSiteID = id
 	}
 
 	tmpl := template.Must(template.ParseFiles("templates/projects.html"))
-	projects, err := s.getProjects(managementID)
+	projects, err := s.getProjects(managementID, buildingSiteID)
 
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting projects")
@@ -336,8 +348,13 @@ func (s *Server) handleReport(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleEngineers(w http.ResponseWriter, r *http.Request) {
-	var managementID int
-	managementIDStr := r.URL.Query().Get("management_id")
+	var (
+		managementID   = 0
+		buildingSiteID = 0
+
+		managementIDStr   = r.URL.Query().Get("management_id")
+		buildingSiteIDStr = r.URL.Query().Get("building_site_id")
+	)
 
 	if managementIDStr != "" {
 		id, err := strconv.Atoi(managementIDStr)
@@ -346,14 +363,21 @@ func (s *Server) handleEngineers(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error on getting management id", http.StatusBadRequest)
 			return
 		}
-
 		managementID = id
-	} else {
-		managementID = 0
+	}
+
+	if buildingSiteIDStr != "" {
+		id, err := strconv.Atoi(buildingSiteIDStr)
+		if err != nil {
+			log.Logger.WithError(err).Error("Error on getting building site id")
+			http.Error(w, "Error on getting building site id", http.StatusBadRequest)
+			return
+		}
+		buildingSiteID = id
 	}
 
 	tmpl := template.Must(template.ParseFiles("templates/engineers.html"))
-	engineers, err := s.getEngineers(managementID)
+	engineers, err := s.getEngineers(managementID, buildingSiteID)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting engineers")
 		http.Error(w, "Error on getting engineers", http.StatusInternalServerError)

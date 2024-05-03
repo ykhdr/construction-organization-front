@@ -6,12 +6,14 @@ import (
 	"strconv"
 )
 
-func (s *Server) getProjects(managementID int) ([]model.ConstructionProject, error) {
-	query := "http://" + s.backendUrl + "/api/v1/"
+func (s *Server) getProjects(managementID, buildingSiteID int) ([]model.ConstructionProject, error) {
+	query := "http://" + s.backendUrl + "/api/v1"
 	if managementID != 0 {
-		query = query + "construction_management/" + strconv.Itoa(managementID) + "/projects"
+		query = query + "/construction_management/" + strconv.Itoa(managementID) + "/projects"
+	} else if buildingSiteID != 0 {
+		query = query + "/building_site/" + strconv.Itoa(buildingSiteID) + "/projects"
 	} else {
-		query = query + "construction_project"
+		query = query + "/construction_project"
 	}
 	projects, err := requests.GetProjects(query)
 	if err != nil {
@@ -135,13 +137,15 @@ func (s *Server) getReport(reportID int) (model.Report, error) {
 	return report, nil
 }
 
-func (s *Server) getEngineers(managementID int) ([]model.EngineerWorker, error) {
-	var query string
+func (s *Server) getEngineers(managementID, buildingSiteID int) ([]model.EngineerWorker, error) {
+	query := "http://" + s.backendUrl + "/api/v1"
 
 	if managementID != 0 {
-		query = "http://" + s.backendUrl + "/api/v1/construction_management/" + strconv.Itoa(managementID) + "/engineers"
+		query = query + "/construction_management/" + strconv.Itoa(managementID) + "/engineers"
+	} else if buildingSiteID != 0 {
+		query = query + "/building_site/" + strconv.Itoa(buildingSiteID) + "/engineers"
 	} else {
-		query = "http://" + s.backendUrl + "/api/v1/engineer_worker"
+		query = query + "/engineer_worker"
 	}
 
 	engineers, err := requests.GetEngineers(query)
