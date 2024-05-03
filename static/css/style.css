@@ -23,6 +23,15 @@ body {
     overflow-y: auto;
 }
 
+.columns {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+.column {
+    width: 48%;
+}
+
 h1 {
     color: #333;
 }
