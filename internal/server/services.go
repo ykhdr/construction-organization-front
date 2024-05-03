@@ -237,3 +237,14 @@ func (s *Server) getBuildingSite(siteID int) (model.BuildingSite, error) {
 
 	return site, nil
 }
+
+func (s *Server) getExceededUsageMaterials(estimateID int) ([]model.Material, error) {
+	query := "http://" + s.backendUrl + "/api/v1/estimate/" + strconv.Itoa(estimateID) + "/exceeded_usage_material"
+
+	materials, err := requests.GetMaterials(query)
+	if err != nil {
+		return nil, err
+	}
+
+	return materials, nil
+}

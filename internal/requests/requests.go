@@ -246,3 +246,18 @@ func GetBuildingSite(query string) (model.BuildingSite, error) {
 
 	return site, nil
 }
+
+func GetMaterials(query string) ([]model.Material, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var materials []model.Material
+	err = json.NewDecoder(response.Body).Decode(&materials)
+	if err != nil {
+		return nil, err
+	}
+
+	return materials, nil
+}

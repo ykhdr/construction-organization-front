@@ -37,6 +37,10 @@
         {{end}}
         </tbody>
     </table>
+    <h2>Exceeded Usage Materials</h2>
+    {{ range .ExceededUsageMaterials }}
+    <p>{{.Name}}</p>
+    {{ end }}
 </div>
 </body>
 </html>

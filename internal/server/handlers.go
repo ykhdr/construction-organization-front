@@ -123,7 +123,7 @@ func (s *Server) handleSchedules(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = tmpl.Execute(w, map[string]interface{}{"Schedules": schedules})
+	err = tmpl.Execute(w, map[string]interface{}{"Schedules": schedules, "ProjectID": projectID})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing project schedules template")
 		http.Error(w, "Error on executing project schedules template", http.StatusInternalServerError)
@@ -149,8 +149,14 @@ func (s *Server) handleEstimate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error on getting project estimate", http.StatusInternalServerError)
 		return
 	}
+	materials, err := s.getExceededUsageMaterials(projectID)
+	if err != nil {
+		log.Logger.WithError(err).Error("Error on getting exceeded usage material")
+		http.Error(w, "Error on getting exceeded usage material", http.StatusInternalServerError)
+		return
+	}
 
-	err = tmpl.Execute(w, map[string]interface{}{"Estimate": estimate})
+	err = tmpl.Execute(w, map[string]interface{}{"Estimate": estimate, "ExceededUsageMaterials": materials})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing project estimate template")
 		http.Error(w, "Error on executing project estimate template", http.StatusInternalServerError)
