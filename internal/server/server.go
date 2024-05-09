@@ -30,5 +30,5 @@ func (s *Server) RunServer() {
 	s.loadCSSStyles()
 
 	log.Logger.Infoln("Server start")
-	log.Logger.Fatal(http.ListenAndServe(":8082", s.router))
+	log.Logger.Fatal(http.ListenAndServe(":80", s.router))
 }

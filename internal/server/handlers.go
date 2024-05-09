@@ -13,7 +13,7 @@ import (
 )
 
 func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("templates/index.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/index.html"))
 	data := view.IndexPageData{
 		PageData: view.PageData{
 			PageTitle: "Construction System",
@@ -56,7 +56,7 @@ func (s *Server) handleProjects(w http.ResponseWriter, r *http.Request) {
 		buildingSiteID = id
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/projects.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/projects.html"))
 	projects, err := s.getProjects(managementID, buildingSiteID)
 
 	if err != nil {
@@ -83,7 +83,7 @@ func (s *Server) handleProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/project.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/project.html"))
 
 	project, err := s.getProject(id)
 	if err != nil {
@@ -116,7 +116,7 @@ func (s *Server) handleSchedules(w http.ResponseWriter, r *http.Request) {
 		projectID = 0
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/schedules.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/schedules.html"))
 	schedules, err := s.getSchedules(projectID)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting project schedules")
@@ -142,7 +142,7 @@ func (s *Server) handleEstimate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tmpl := template.New("estimate.html").Funcs(template.FuncMap{"mul": util.Mul})
-	tmpl = template.Must(tmpl.ParseFiles("templates/estimate.html"))
+	tmpl = template.Must(tmpl.ParseFiles("/templates/estimate.html"))
 
 	estimate, err := s.getEstimate(projectID)
 	if err != nil {
@@ -208,7 +208,7 @@ func (s *Server) handleConstructionTeams(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/construction_teams.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/construction_teams.html"))
 	teams, err := s.getConstructionTeams(projectID, workTypeID, startDate, endDate)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting project schedules")
@@ -264,7 +264,7 @@ func (s *Server) handleMachines(w http.ResponseWriter, r *http.Request) {
 		managementID = id
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/machines.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/machines.html"))
 	machines, err := s.getMachines(projectID, managementID, startDate, endDate)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting project machines")
@@ -289,7 +289,7 @@ func (s *Server) handleExceededDeadlinesWorks(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/exceeded_deadlines.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/exceeded_deadlines.html"))
 	workTypes, err := s.getExceededDeadlinesWorks(projectID)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting project exceeded deadlines works")
@@ -314,7 +314,7 @@ func (s *Server) handleReports(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/reports.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/reports.html"))
 	reports, err := s.getReports(projectID)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting project estimate")
@@ -342,7 +342,7 @@ func (s *Server) handleReport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/report_file.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/report_file.html"))
 	report, err := s.getReport(reportId)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting report")
@@ -388,7 +388,7 @@ func (s *Server) handleEngineers(w http.ResponseWriter, r *http.Request) {
 		buildingSiteID = id
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/engineers.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/engineers.html"))
 	engineers, err := s.getEngineers(managementID, buildingSiteID)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting engineers")
@@ -413,7 +413,7 @@ func (s *Server) handleEngineer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/engineer.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/engineer.html"))
 	engineer, err := s.getEngineer(engineerID)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting engineer")
@@ -429,7 +429,7 @@ func (s *Server) handleEngineer(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleManagements(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("templates/managements.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/managements.html"))
 	managements, err := s.getManagements()
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting managements")
@@ -454,7 +454,7 @@ func (s *Server) handleManagement(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/management.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/management.html"))
 	management, err := s.getManagement(managementID)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting management")
@@ -479,7 +479,7 @@ func (s *Server) handleConstructionTeam(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/construction_team.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/construction_team.html"))
 	constructionTeam, err := s.getConstructionTeam(teamID)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting construction team")
@@ -517,7 +517,7 @@ func (s *Server) handleConstructionTeamWorkTypes(w http.ResponseWriter, r *http.
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/work_types.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/work_types.html"))
 	workTypes, err := s.getWorkTypes(teamID, startDate, endDate)
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on getting work types")
@@ -552,7 +552,7 @@ func (s *Server) handleBuildingOrganization(w http.ResponseWriter, r *http.Reque
 	}
 
 	organization, err := s.getBuildingOrganization(organizationID)
-	tmpl := template.Must(template.ParseFiles("templates/building_organization.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/building_organization.html"))
 	err = tmpl.Execute(w, map[string]interface{}{"BuildingOrganization": organization})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing building organization template")
@@ -567,7 +567,7 @@ func (s *Server) handleBuildingSites(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error on getting building sites", http.StatusInternalServerError)
 		return
 	}
-	tmpl := template.Must(template.ParseFiles("templates/building_sites.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/building_sites.html"))
 	err = tmpl.Execute(w, map[string]interface{}{"BuildingSites": sites})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing building sites template")
@@ -591,7 +591,7 @@ func (s *Server) handleBuildingSite(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error on getting site", http.StatusInternalServerError)
 		return
 	}
-	tmpl := template.Must(template.ParseFiles("templates/building_site.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/building_site.html"))
 	err = tmpl.Execute(w, map[string]interface{}{"BuildingSite": site})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing building site template")
@@ -641,7 +641,7 @@ func (s *Server) handleCreateSchedulePage(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/schedules_create.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/schedules_create.html"))
 	err = tmpl.Execute(w, map[string]interface{}{"Projects": projects, "WorkTypes": workTypes, "ConstructionTeams": teams})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing schedule create template")
@@ -723,7 +723,7 @@ func (s *Server) handleCreateConstructionTeamPage(w http.ResponseWriter, r *http
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/construction_team_create.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/construction_team_create.html"))
 	err = tmpl.Execute(w, map[string]interface{}{"Projects": projects})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing schedule create template")
@@ -775,7 +775,7 @@ func (s *Server) handleSchedule(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/schedule.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/schedule.html"))
 	err = tmpl.Execute(w, map[string]interface{}{"Schedule": schedule})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -872,7 +872,7 @@ func (s *Server) handleUpdateSchedulePage(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/schedule_edit.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/schedule_edit.html"))
 	err = tmpl.Execute(w, map[string]interface{}{"Schedule": schedule})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -887,7 +887,7 @@ func (s *Server) handleEngineerTeams(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/engineer_teams.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/engineer_teams.html"))
 	err = tmpl.Execute(w, map[string]interface{}{"EngineerTeams": engineerTeams})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -910,7 +910,7 @@ func (s *Server) handleEngineerTeam(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/engineer_team.html"))
+	tmpl := template.Must(template.ParseFiles("/templates/engineer_team.html"))
 	err = tmpl.Execute(w, map[string]interface{}{"EngineerTeam": engineerTeam})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
