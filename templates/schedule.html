@@ -1,0 +1,48 @@
+<!-- templates/project.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule Details</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Schedule Details</h1>
+    <p><strong>ID:</strong> {{.Schedule.ID}}</p>
+    <p><strong>Construction Team ID:</strong> <a href="/construction_team/{{.Schedule.ConstructionTeamID}}">{{.Schedule.ConstructionTeamID}}</a></p>
+    <p><strong>Project ID:</strong> <a href="/project/{{.Schedule.ProjectID}}">{{.Schedule.ProjectID}}</a></p>
+    <p>Work Type: {{.Schedule.WorkType.Name}}</p>
+    <p>Plan Start Date: {{.Schedule.PlanStartDate.Format "02.01.2006"}}</p>
+    <p>Plan End Date: {{.Schedule.PlanEndDate.Format "02.01.2006"}}</p>
+    <p>Fact Start Date: {{if .Schedule.FactStartDate.IsZero}}Not Started{{else}}{{.Schedule.FactStartDate.Format "02.01.2006"}}{{end}}</p>
+    <p>Fact End Date: {{if .Schedule.FactEndDate.IsZero}}Not Ended{{else}}{{.Schedule.FactEndDate.Format "02.01.2006"}}{{end}}</p>
+    <p>Plan Order: {{.Schedule.PlanOrder}}</p>
+    <p>Fact Order: {{.Schedule.FactOrder}}</p>
+    <button onclick="deleteSchedule({{.Schedule.ID}})">Delete Schedule</button>
+    <button onclick="updateSchedule({{.Schedule.ID}})">Update Schedule</button>
+</div>
+
+<script>
+    function deleteSchedule(scheduleId) {
+        if (confirm('Are you sure you want to delete this schedule?')) {
+            fetch(`/schedule/${scheduleId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Schedule deleted successfully!');
+                        window.location.href = '/schedule'; // редирект на список расписаний
+                    } else {
+                        alert('Failed to delete schedule.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+    function updateSchedule(scheduleId) {
+        window.location.href = `/schedule/${scheduleId}/update`;
+    }
+</script>
+</body>
+</html>

@@ -273,3 +273,45 @@ func (s *Server) saveWorkSchedule(workSchedule *model.WorkSchedule) error {
 	err := requests.SaveWorkSchedule(query, workSchedule)
 	return err
 }
+
+func (s *Server) saveConstructionTeam(team *model.ConstructionTeam) error {
+	query := "http://" + s.backendUrl + "/api/v1/construction_team"
+
+	err := requests.SaveConstructionTeam(query, team)
+	return err
+}
+
+func (s *Server) getSchedule(scheduleID int) (model.WorkSchedule, error) {
+	query := "http://" + s.backendUrl + "/api/v1/work_schedule/" + strconv.Itoa(scheduleID)
+
+	schedule, err := requests.GetSchedule(query)
+
+	return schedule, err
+}
+
+func (s *Server) deleteSchedule(scheduleID int) error {
+
+	query := "http://" + s.backendUrl + "/api/v1/work_schedule/" + strconv.Itoa(scheduleID)
+
+	err := requests.DeleteSchedule(query)
+
+	return err
+}
+
+func (s *Server) deleteConstructionTeam(teamID int) error {
+
+	query := "http://" + s.backendUrl + "/api/v1/construction_team/" + strconv.Itoa(teamID)
+
+	err := requests.DeleteConstructionTeam(query)
+
+	return err
+}
+
+func (s *Server) updateSchedule(schedule *model.WorkSchedule) error {
+
+	query := "http://" + s.backendUrl + "/api/v1/work_schedule/" + strconv.Itoa(schedule.ID)
+
+	err := requests.UpdateSchedule(query, schedule)
+
+	return err
+}

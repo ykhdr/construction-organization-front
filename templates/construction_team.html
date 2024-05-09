@@ -16,7 +16,26 @@
     <div class="resources">
         <a href="/construction_team/{{.ConstructionTeam.ID}}/work_types">Work Types</a>
     </div>
-
+    <button onclick="deleteConstructionTeam({{.ConstructionTeam.ID}})">Delete Team</button>
 </div>
+
+<script>
+    function deleteConstructionTeam(teamID) {
+        if (confirm('Are you sure you want to delete this team?')) {
+            fetch(`/construction_team/${teamID}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Team deleted successfully!');
+                        window.location.href = '/construction_team'; // редирект на список расписаний
+                    } else {
+                        alert('Failed to delete construction_team.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+</script>
 </body>
 </html>

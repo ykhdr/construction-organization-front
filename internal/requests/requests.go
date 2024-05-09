@@ -5,7 +5,7 @@ import (
 	"construction-organization-system/construction-organization-front/internal/model"
 	"encoding/json"
 	"errors"
-	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -291,7 +291,12 @@ func GetBuildingSites(query string) ([]model.BuildingSite, error) {
 
 func SaveWorkSchedule(query string, schedule *model.WorkSchedule) error {
 
-	response, err := http.Post(query, "application/json", bytes.NewBuffer([]byte(fmt.Sprintf("%v", schedule))))
+	jsn, err := json.Marshal(schedule)
+	if err != nil {
+		return err
+	}
+
+	response, err := http.Post(query, "application/json", bytes.NewBuffer(jsn))
 	if err != nil {
 		return err
 	}
@@ -300,5 +305,89 @@ func SaveWorkSchedule(query string, schedule *model.WorkSchedule) error {
 		return nil
 	}
 
-	return errors.New("failed to save work schedule")
+	messageBytes, _ := io.ReadAll(response.Body)
+	message := string(messageBytes)
+
+	return errors.New("failed to save work schedule: " + message)
+}
+
+func SaveConstructionTeam(query string, team *model.ConstructionTeam) error {
+	jsn, err := json.Marshal(team)
+	if err != nil {
+		return err
+	}
+
+	response, err := http.Post(query, "application/json", bytes.NewBuffer(jsn))
+	if err != nil {
+		return err
+	}
+
+	if response.StatusCode == 200 || response.StatusCode == 201 {
+		return nil
+	}
+
+	messageBytes, _ := io.ReadAll(response.Body)
+	message := string(messageBytes)
+
+	return errors.New("failed to save construction team: " + message)
+}
+
+func GetSchedule(query string) (model.WorkSchedule, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return model.WorkSchedule{ID: 0}, err
+	}
+
+	var schedule model.WorkSchedule
+	err = json.NewDecoder(response.Body).Decode(&schedule)
+	if err != nil {
+		return model.WorkSchedule{ID: 0}, err
+	}
+
+	return schedule, nil
+}
+
+func DeleteSchedule(query string) error {
+	_, err := http.NewRequest("DELETE", query, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteConstructionTeam(query string) error {
+	_, err := http.NewRequest("DELETE", query, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UpdateSchedule(query string, schedule *model.WorkSchedule) error {
+	client := &http.Client{}
+	jsn, err := json.Marshal(schedule)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, query, bytes.NewBuffer(jsn))
+	if err != nil {
+		return err
+	}
+
+	response, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if response.StatusCode == 200 || response.StatusCode == 201 {
+		return nil
+	}
+
+	messageBytes, _ := io.ReadAll(response.Body)
+	message := string(messageBytes)
+
+	return errors.New("failed to update schedule: " + message)
 }

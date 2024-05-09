@@ -9,6 +9,7 @@
 <body>
 <div class="container">
     <h1>Work Schedules {{if ne .ProjectID 0}}for Project <a href="/project/{{.ProjectID}}">{{.ProjectID}}</a>{{end}}</h1>
+    <h3><a href="/schedule/create">Create schedule</a></h3>
     <div class="table-container">
         <table>
             <thead>
@@ -22,12 +23,13 @@
                 <th>Fact End Date</th>
                 <th>Plan Order</th>
                 <th>Fact Order</th>
+                <th>Project ID</th>
             </tr>
             </thead>
             <tbody>
             {{range .Schedules}}
             <tr>
-                <td>{{.ID}}</td>
+                <td><a href="/schedule/{{.ID}}">{{.ID}}</a></td>
                 <td><a href="/construction_team/{{.ConstructionTeamID}}">{{.ConstructionTeamID}}</a></td>
                 <td>{{.WorkType.Name}}</td>
                 <td>{{.PlanStartDate.Format "02.01.2006"}}</td>
@@ -36,6 +38,7 @@
                 <td>{{if .FactEndDate.IsZero}}Not Ended{{else}}{{.FactEndDate.Format "02.01.2006"}}{{end}}</td>
                 <td>{{.PlanOrder}}</td>
                 <td>{{.FactOrder}}</td>
+                <td><a href="/project/{{.ProjectID}}">{{.ProjectID}}</a></td>
             </tr>
             {{end}}
             </tbody>

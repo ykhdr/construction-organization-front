@@ -84,6 +84,12 @@ button {
     box-sizing: border-box;
 }
 
+input {
+    width: 50%;
+    align-self: center;
+    margin-bottom: 5px;
+}
+
 button {
     background-color: #4CAF50; /* Зелёный фон для кнопки */
     color: white; /* Белый текст для кнопки */
