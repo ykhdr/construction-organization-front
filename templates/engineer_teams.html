@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Engineer Teams</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Engineer Teams</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Team ID</th>
+            <th>Team Name</th>
+            <th>Project ID</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .EngineerTeams}}
+        <tr>
+            <td>{{.ID}}</td>
+            <td>{{.Name}}</td>
+            <td><a href="/project/{{.ProjectID}}">{{.ProjectID}}</a></td>
+            <td><a href="/engineer_team/{{.ID}}">View Details</a></td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

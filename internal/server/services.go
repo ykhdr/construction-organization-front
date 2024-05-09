@@ -315,3 +315,27 @@ func (s *Server) updateSchedule(schedule *model.WorkSchedule) error {
 
 	return err
 }
+
+func (s *Server) getEngineerTeams() ([]model.EngineerTeam, error) {
+
+	query := "http://" + s.backendUrl + "/api/v1/engineer_team"
+
+	teams, err := requests.GetEngineerTeams(query)
+	if err != nil {
+		return nil, err
+	}
+
+	return teams, nil
+}
+
+func (s *Server) getEngineerTeam(teamID int) (model.EngineerTeam, error) {
+
+	query := "http://" + s.backendUrl + "/api/v1/engineer_team/" + strconv.Itoa(teamID)
+
+	team, err := requests.GetEngineerTeam(query)
+	if err != nil {
+		return model.EngineerTeam{ID: 0}, err
+	}
+
+	return team, nil
+}

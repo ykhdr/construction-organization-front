@@ -879,6 +879,45 @@ func (s *Server) handleUpdateSchedulePage(w http.ResponseWriter, r *http.Request
 		return
 	}
 }
+
+func (s *Server) handleEngineerTeams(w http.ResponseWriter, r *http.Request) {
+	engineerTeams, err := s.getEngineerTeams()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("templates/engineer_teams.html"))
+	err = tmpl.Execute(w, map[string]interface{}{"EngineerTeams": engineerTeams})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+}
+
+func (s *Server) handleEngineerTeam(w http.ResponseWriter, r *http.Request) {
+
+	engineerTeamID, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		http.Error(w, "Invalid engineer team ID", http.StatusBadRequest)
+		return
+	}
+
+	engineerTeam, err := s.getEngineerTeam(engineerTeamID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("templates/engineer_team.html"))
+	err = tmpl.Execute(w, map[string]interface{}{"EngineerTeam": engineerTeam})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/", s.handleIndex).Methods("GET")
 
@@ -911,6 +950,9 @@ func (s *Server) initializeRoutes() {
 
 	s.router.HandleFunc("/engineer", s.handleEngineers).Methods("GET")
 	s.router.HandleFunc("/engineer/{id:[0-9]+}", s.handleEngineer).Methods("GET")
+
+	s.router.HandleFunc("/engineer_team", s.handleEngineerTeams).Methods("GET")
+	s.router.HandleFunc("/engineer_team/{id:[0-9]+}", s.handleEngineerTeam).Methods("GET")
 
 	s.router.HandleFunc("/management", s.handleManagements).Methods("GET")
 	s.router.HandleFunc("/management/{id:[0-9]+}", s.handleManagement).Methods("GET")

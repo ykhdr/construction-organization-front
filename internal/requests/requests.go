@@ -391,3 +391,35 @@ func UpdateSchedule(query string, schedule *model.WorkSchedule) error {
 
 	return errors.New("failed to update schedule: " + message)
 }
+
+func GetEngineerTeams(query string) ([]model.EngineerTeam, error) {
+
+	response, err := http.Get(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var teams []model.EngineerTeam
+	err = json.NewDecoder(response.Body).Decode(&teams)
+	if err != nil {
+		return nil, err
+	}
+
+	return teams, nil
+}
+
+func GetEngineerTeam(query string) (model.EngineerTeam, error) {
+
+	response, err := http.Get(query)
+	if err != nil {
+		return model.EngineerTeam{ID: 0}, err
+	}
+
+	var team model.EngineerTeam
+	err = json.NewDecoder(response.Body).Decode(&team)
+	if err != nil {
+		return model.EngineerTeam{ID: 0}, err
+	}
+
+	return team, nil
+}
