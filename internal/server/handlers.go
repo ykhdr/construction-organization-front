@@ -801,7 +801,6 @@ func (s *Server) handleDeleteSchedule(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleDeleteConstructionTeam(w http.ResponseWriter, r *http.Request) {
-
 	teamID, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
 		http.Error(w, "Invalid construction team ID", http.StatusBadRequest)

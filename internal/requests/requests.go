@@ -357,12 +357,25 @@ func DeleteSchedule(query string) error {
 }
 
 func DeleteConstructionTeam(query string) error {
-	_, err := http.NewRequest("DELETE", query, nil)
+	client := &http.Client{}
+	req, err := http.NewRequest("DELETE", query, nil)
 	if err != nil {
 		return err
 	}
 
-	return nil
+	response, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if response.StatusCode == http.StatusOK {
+		return nil
+	}
+
+	messageBytes, _ := io.ReadAll(response.Body)
+	message := string(messageBytes)
+
+	return errors.New("failed to delete construction team: " + message)
 }
 
 func UpdateSchedule(query string, schedule *model.WorkSchedule) error {
