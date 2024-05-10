@@ -339,3 +339,12 @@ func (s *Server) getEngineerTeam(teamID int) (model.EngineerTeam, error) {
 
 	return team, nil
 }
+
+func (s *Server) updateConstructionTeam(team *model.ConstructionTeam) error {
+
+	query := "http://" + s.backendUrl + "/api/v1/construction_team/" + strconv.Itoa(team.ID)
+
+	err := requests.UpdateConstructionTeam(query, team)
+
+	return err
+}

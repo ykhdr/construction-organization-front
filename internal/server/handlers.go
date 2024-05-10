@@ -918,6 +918,58 @@ func (s *Server) handleEngineerTeam(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *Server) handleUpdateConstructionTeamPage(w http.ResponseWriter, r *http.Request) {
+	teamID, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		log.Logger.WithError(err).Error("Invalid engineer team ID")
+		http.Error(w, "Invalid engineer team ID", http.StatusBadRequest)
+		return
+	}
+
+	team, err := s.getConstructionTeam(teamID)
+	if err != nil {
+		log.Logger.WithError(err).Error("Failed to get engineer team")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("/templates/construction_team_edit.html"))
+	err = tmpl.Execute(w, map[string]interface{}{"ConstructionTeam": team})
+	if err != nil {
+		log.Logger.WithError(err).Error("Failed to execute template")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (s *Server) handleUpdateConstructionTeam(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Logger.WithError(err).Error("Failed to parse form")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	teamID, _ := strconv.Atoi(mux.Vars(r)["id"])
+	name := r.FormValue("name")
+	projectID, _ := strconv.Atoi(r.FormValue("project_id"))
+
+	team := model.ConstructionTeam{
+		ID:        teamID,
+		Name:      name,
+		ProjectID: projectID,
+	}
+
+	err = s.updateConstructionTeam(&team)
+	if err != nil {
+		log.Logger.WithError(err).Error("Failed to save engineer team")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/construction_team/"+strconv.Itoa(teamID), http.StatusSeeOther)
+}
+
 func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/", s.handleIndex).Methods("GET")
 
@@ -942,6 +994,8 @@ func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/construction_team", s.handleConstructionTeams).Methods("GET")
 	s.router.HandleFunc("/construction_team/create", s.handleCreateConstructionTeamPage).Methods("GET")
 	s.router.HandleFunc("/construction_team/create", s.handleCreateConstructionTeam).Methods("POST")
+	s.router.HandleFunc("/construction_team/{id:[0-9]+}/update", s.handleUpdateConstructionTeamPage).Methods("GET")
+	s.router.HandleFunc("/construction_team/{id:[0-9]+}/update", s.handleUpdateConstructionTeam).Methods("POST")
 	s.router.HandleFunc("/construction_team/{id:[0-9]+}", s.handleConstructionTeam).Methods("GET")
 	s.router.HandleFunc("/construction_team/{id:[0-9]+}", s.handleDeleteConstructionTeam).Methods("DELETE")
 	s.router.HandleFunc("/construction_team/{id:[0-9]+}/work_types", s.handleConstructionTeamWorkTypes).Methods("GET")

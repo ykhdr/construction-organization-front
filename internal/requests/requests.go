@@ -423,3 +423,31 @@ func GetEngineerTeam(query string) (model.EngineerTeam, error) {
 
 	return team, nil
 }
+
+func UpdateConstructionTeam(query string, team *model.ConstructionTeam) error {
+
+	client := &http.Client{}
+	jsn, err := json.Marshal(team)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, query, bytes.NewBuffer(jsn))
+	if err != nil {
+		return err
+	}
+
+	response, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if response.StatusCode == 200 || response.StatusCode == 201 {
+		return nil
+	}
+
+	messageBytes, _ := io.ReadAll(response.Body)
+	message := string(messageBytes)
+
+	return errors.New("failed to update construction team: " + message)
+}

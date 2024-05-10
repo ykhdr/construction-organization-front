@@ -17,6 +17,7 @@
         <a href="/construction_team/{{.ConstructionTeam.ID}}/work_types">Work Types</a>
     </div>
     <button onclick="deleteConstructionTeam({{.ConstructionTeam.ID}})">Delete Team</button>
+    <button onclick="updateConstructionTeam({{.ConstructionTeam.ID}})">Update Team</button>
 </div>
 
 <script>
@@ -36,6 +37,11 @@
                 .catch(error => console.error('Error:', error));
         }
     }
+
+    function updateConstructionTeam(teamID) {
+        window.location.href = `/construction_team/${teamID}/update`;
+    }
+
 </script>
 </body>
 </html>
