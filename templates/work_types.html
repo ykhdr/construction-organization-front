@@ -11,10 +11,10 @@
     <h1>Work Types List of {{.ConstructionTeam.Name}}</h1>
     <form action="/construction_team/{{.ConstructionTeam.ID}}/work_types" method="get">
         <label for="startDate">Start Date:</label>
-        <input type="text" id="startDate" name="start_date">
+        <input type="date" id="startDate" name="start_date">
 
         <label for="endDate">End Date:</label>
-        <input type="text" id="endDate" name="end_date">
+        <input type="date" id="endDate" name="end_date">
 
         <button type="submit">Filter</button>
     </form>

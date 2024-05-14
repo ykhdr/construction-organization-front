@@ -11,9 +11,9 @@
     <h1>Construction Machines</h1>
     <form action="/machinery" method="get">
         <label for="start_date">Start Date:</label>
-        <input type="text" id="start_date" name="start_date">
+        <input type="date" id="start_date" name="start_date">
         <label for="end_date">End Date:</label>
-        <input type="text" id="end_date" name="end_date">
+        <input type="date" id="end_date" name="end_date">
         <input type="hidden" name="project_id" value="{{.ProjectID}}">
         <button type="submit">Filter</button>
     </form>
