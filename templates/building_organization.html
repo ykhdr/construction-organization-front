@@ -8,8 +8,13 @@
 </head>
 <body>
 <div class="container">
-    <h1>Building Organization {{.BuildingOrganization.Name}}</h1>
+    <h1>Building Organization: {{.BuildingOrganization.Name}}</h1>
     <p><strong>ID:</strong> {{.BuildingOrganization.ID}}</p>
+
+    <h2>Organization Resources</h2>
+    <div class="resources">
+        <a href="/project?organization_id={{.BuildingOrganization.ID}}">Projects</a>
+    </div>
 </div>
 </body>
 </html>

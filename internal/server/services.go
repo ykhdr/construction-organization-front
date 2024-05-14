@@ -348,3 +348,15 @@ func (s *Server) updateConstructionTeam(team *model.ConstructionTeam) error {
 
 	return err
 }
+
+func (s *Server) getBuildingOrganizations() ([]model.BuildingOrganization, error) {
+
+	query := "http://" + s.backendUrl + "/api/v1/building_organization"
+
+	organizations, err := requests.GetBuildingOrganizations(query)
+	if err != nil {
+		return nil, err
+	}
+
+	return organizations, nil
+}

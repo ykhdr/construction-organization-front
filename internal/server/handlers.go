@@ -969,6 +969,23 @@ func (s *Server) handleUpdateConstructionTeam(w http.ResponseWriter, r *http.Req
 	http.Redirect(w, r, "/construction_team/"+strconv.Itoa(teamID), http.StatusSeeOther)
 }
 
+func (s *Server) handleBuildingOrganizations(w http.ResponseWriter, r *http.Request) {
+
+	buildingOrganizations, err := s.getBuildingOrganizations()
+	if err != nil {
+		log.Logger.WithError(err).Error("Failed to get building organizations")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("/templates/building_organizations.html"))
+	err = tmpl.Execute(w, map[string]interface{}{"BuildingOrganizations": buildingOrganizations})
+	if err != nil {
+		log.Logger.WithError(err).Error("Failed to execute template")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/", s.handleIndex).Methods("GET")
 
@@ -1011,6 +1028,7 @@ func (s *Server) initializeRoutes() {
 	s.router.HandleFunc("/management/{id:[0-9]+}", s.handleManagement).Methods("GET")
 
 	s.router.HandleFunc("/building_organization/{id:[0-9]+}", s.handleBuildingOrganization).Methods("GET")
+	s.router.HandleFunc("/building_organization", s.handleBuildingOrganizations).Methods("GET")
 
 	s.router.HandleFunc("/building_site", s.handleBuildingSites).Methods("GET")
 	s.router.HandleFunc("/building_site/{id:[0-9]+}", s.handleBuildingSite).Methods("GET")

@@ -476,3 +476,18 @@ func UpdateConstructionTeam(query string, team *model.ConstructionTeam) error {
 
 	return errors.New("failed to update construction team: " + message)
 }
+
+func GetBuildingOrganizations(query string) ([]model.BuildingOrganization, error) {
+	response, err := http.Get(query)
+	if err != nil {
+		return nil, err
+	}
+
+	var organizations []model.BuildingOrganization
+	err = json.NewDecoder(response.Body).Decode(&organizations)
+	if err != nil {
+		return nil, err
+	}
+
+	return organizations, nil
+}
