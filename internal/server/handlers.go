@@ -225,6 +225,7 @@ func (s *Server) handleConstructionTeams(w http.ResponseWriter, r *http.Request)
 	err = tmpl.Execute(w, map[string]interface{}{
 		"ConstructionTeams": teams,
 		"WorkTypes":         workTypes,
+		"ProjectID":         projectID,
 	})
 	if err != nil {
 		log.Logger.WithError(err).Error("Error on executing project schedules template")

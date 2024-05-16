@@ -63,10 +63,11 @@ func (s *Server) getEstimate(projectID int) (model.Estimate, error) {
 
 func (s *Server) getConstructionTeams(projectID, workTypeID int, startDate, endDate string) ([]model.ConstructionTeam, error) {
 	var query = "http://" + s.backendUrl + "/api/v1"
-	if projectID != 0 {
+
+	if workTypeID != 0 {
+		query = query + "/construction_team?work_type=" + strconv.Itoa(workTypeID) + "&start_date=" + startDate + "&end_date=" + endDate + "&project_id=" + strconv.Itoa(projectID)
+	} else if projectID != 0 {
 		query = query + "/construction_project/" + strconv.Itoa(projectID) + "/construction_teams"
-	} else if workTypeID != 0 {
-		query = query + "/construction_team?work_type=" + strconv.Itoa(workTypeID) + "&start_date=" + startDate + "&end_date=" + endDate
 	} else {
 		query = query + "/construction_team"
 	}
